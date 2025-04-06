@@ -1,57 +1,131 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Paciente HL7 FHIR</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Solicitud Médica</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f1f1f1;
+      margin: 0; padding: 2rem;
+    }
+    .box {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #1d3557;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin: 1rem 0 .3rem;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: .6rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .dates input {
+      margin-bottom: .5rem;
+    }
+    button {
+      margin-top: 1rem;
+      width: 100%;
+      background: #457b9d;
+      color: #fff;
+      border: none;
+      padding: 1rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #356183;
+    }
+  </style>
 </head>
 <body>
-    <h1>Formulario de Paciente HL7 FHIR</h1>
-    <form id="patientForm">
-        <label for="name">Nombre:</label>
-        <input type="text" id="name" name="name" required><br><br>
+  <div class="box">
+    <h1>Solicitud Médica</h1>
+    <form id="form">
+      <label>Paciente *</label>
+      <input type="text" id="paciente" required />
+      <label>Fecha de consulta *</label>
+      <input type="date" id="consulta" required />
+      
+      <label>Médico *</label>
+      <input type="text" id="medico" required />
+      <label>Cédula *</label>
+      <input type="text" id="cedula" required />
+      
+      <label>Diagnóstico *</label>
+      <textarea id="dx" required></textarea>
+      
+      <label>Procedimiento *</label>
+      <input type="text" id="proc" required />
+      <label>Justificación *</label>
+      <textarea id="just" required></textarea>
 
-        <label for="familyName">Apellido:</label>
-        <input type="text" id="familyName" name="familyName" required><br><br>
+      <label>Fechas preferidas</label>
+      <div class="dates">
+        <input type="date" id="f1" />
+        <input type="date" id="f2" />
+        <input type="date" id="f3" />
+      </div>
 
-        <label for="gender">Género:</label>
-        <select id="gender" name="gender" required>
-            <option value="male">Masculino</option>
-            <option value="female">Femenino</option>
-            <option value="other">Otro</option>
-            <option value="unknown">Desconocido</option>
-        </select><br><br>
+      <label>Horario</label>
+      <select id="hora">
+        <option value="matutino">8–12</option>
+        <option value="vespertino">12–16</option>
+        <option value="nocturno">16–20</option>
+      </select>
 
-        <label for="birthDate">Fecha de Nacimiento:</label>
-        <input type="date" id="birthDate" name="birthDate" required><br><br>
-
-        <label for="identifierSystem">Tipo de documento de identidad:</label>
-        <select id="identifierSystem" name="identifierSystem" required>
-            <option value="http://cedula">Cédula de ciudadanía</option>
-            <option value="http://pasaporte">Pasaporte</option>
-        </select><br><br>
-
-        <label for="identifierValue">Número de documento:</label>
-        <input type="text" id="identifierValue" name="identifierValue" required><br><br>
-
-        <label for="cellPhone">Teléfono celular:</label>
-        <input type="text" id="cellPhone" name="cellPhone" required><br><br>
-
-        <label for="email">Correo electrónico:</label>
-        <input type="text" id="email" name="email" required><br><br>
-
-        <label for="address">Dirección:</label>
-        <input type="text" id="address" name="address" required><br><br>
-
-        <label for="city">Ciudad:</label>
-        <input type="text" id="city" name="city" required><br><br>
-
-        <label for="postalCode">Código postal:</label>
-        <input type="text" id="postalCode" name="postalCode" required><br><br>
-
-        <button type="submit">Enviar</button>
+      <button type="submit">Enviar</button>
     </form>
+  </div>
 
-    <script src="app.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    const getFecha = d => d.toISOString().split('T')[0];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const hoy = new Date();
+      $('consulta').max = getFecha(hoy);
+      hoy.setDate(hoy.getDate() + 1);
+      ['f1', 'f2', 'f3'].forEach(id => $(id).min = getFecha(hoy));
+    });
+
+    $('form').addEventListener('submit', e => {
+      e.preventDefault();
+      if ($('consulta').value > getFecha(new Date()))
+        return alert("La fecha de consulta no puede ser futura");
+
+      const datos = {
+        paciente: $('paciente').value,
+        consulta: $('consulta').value,
+        medico: $('medico').value,
+        cedula: $('cedula').value,
+        dx: $('dx').value,
+        procedimiento: $('proc').value,
+        justificacion: $('just').value,
+        fechas: ['f1', 'f2', 'f3'].map(id => $(id).value).filter(f => f),
+        horario: $('hora').value,
+        enviada: new Date().toLocaleString()
+      };
+
+      console.log("Datos:", datos);
+      alert("Solicitud enviada");
+      e.target.reset();
+    });
+  </script>
 </body>
 </html>
