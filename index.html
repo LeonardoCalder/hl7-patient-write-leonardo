@@ -34,11 +34,8 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    .dates input {
-      margin-bottom: .5rem;
-    }
     button {
-      margin-top: 1rem;
+      margin-top: 1.5rem;
       width: 100%;
       background: #457b9d;
       color: #fff;
@@ -59,11 +56,13 @@
     <form id="form">
       <label>Paciente *</label>
       <input type="text" id="paciente" required />
+      
       <label>Fecha de consulta *</label>
       <input type="date" id="consulta" required />
       
       <label>Médico *</label>
       <input type="text" id="medico" required />
+      
       <label>Cédula *</label>
       <input type="text" id="cedula" required />
       
@@ -72,16 +71,13 @@
       
       <label>Procedimiento *</label>
       <input type="text" id="proc" required />
+      
       <label>Justificación *</label>
       <textarea id="just" required></textarea>
 
-      <label>Fechas preferidas</label>
-      <div class="dates">
-        <input type="date" id="f1" />
-        <input type="date" id="f2" />
-        <input type="date" id="f3" />
-      </div>
-
+      <label>Fecha preferida de cita</label>
+      <input type="date" id="fechaCita" />
+      
       <label>Horario</label>
       <select id="hora">
         <option value="matutino">8–12</option>
@@ -95,19 +91,21 @@
 
   <script>
     const $ = id => document.getElementById(id);
-    const getFecha = d => d.toISOString().split('T')[0];
+    const hoyISO = () => new Date().toISOString().split('T')[0];
 
     document.addEventListener('DOMContentLoaded', () => {
-      const hoy = new Date();
-      $('consulta').max = getFecha(hoy);
-      hoy.setDate(hoy.getDate() + 1);
-      ['f1', 'f2', 'f3'].forEach(id => $(id).min = getFecha(hoy));
+      $('consulta').max = hoyISO();
+      const mañana = new Date();
+      mañana.setDate(mañana.getDate() + 1);
+      $('fechaCita').min = mañana.toISOString().split('T')[0];
     });
 
     $('form').addEventListener('submit', e => {
       e.preventDefault();
-      if ($('consulta').value > getFecha(new Date()))
-        return alert("La fecha de consulta no puede ser futura");
+      if ($('consulta').value > hoyISO()) {
+        alert("La fecha de consulta no puede ser futura");
+        return;
+      }
 
       const datos = {
         paciente: $('paciente').value,
@@ -117,7 +115,7 @@
         dx: $('dx').value,
         procedimiento: $('proc').value,
         justificacion: $('just').value,
-        fechas: ['f1', 'f2', 'f3'].map(id => $(id).value).filter(f => f),
+        fechaPreferida: $('fechaCita').value || null,
         horario: $('hora').value,
         enviada: new Date().toLocaleString()
       };
