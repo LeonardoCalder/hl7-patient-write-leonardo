@@ -1,66 +1,78 @@
-document.getElementById('patientForm').addEventListener('submit', function(event) {
-    event.preventDefault();
- 
-    // Obtener los valores del formulario
-    const name = document.getElementById('name').value;
-    const familyName = document.getElementById('familyName').value;
-    const gender = document.getElementById('gender').value;
-    const birthDate = document.getElementById('birthDate').value;
-    const identifierSystem = document.getElementById('identifierSystem').value;
-    const identifierValue = document.getElementById('identifierValue').value;
-    const cellPhone = document.getElementById('cellPhone').value;
-    const email = document.getElementById('email').value;
-    const address = document.getElementById('address').value;
-    const city = document.getElementById('city').value;
-    const postalCode = document.getElementById('postalCode').value;
- 
-    // Crear el objeto Patient en formato FHIR
-    const patient = {
-        resourceType: "Patient",
-        name: [{
-            use: "official",
-            given: [name],
-            family: familyName
-        }],
-        gender: gender,
-        birthDate: birthDate,
-        identifier: [{
-            system: identifierSystem,
-            value: identifierValue
-        }],
-        telecom: [{
-            system: "phone",
-            value: cellPhone,
-            use: "home"
-        }, {
-            system: "email",
-            value: email,
-            use: "home"
-        }],
-        address: [{
-            use: "home",
-            line: [address],
-            city: city,
-            postalCode: postalCode,
-            country: "Colombia"
-        }]
-    };
- 
-    // Enviar los datos usando Fetch API
-    fetch('https://hl7-fhir-ehr-leonardo.onrender.com/patient', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(patient)
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-        alert('Paciente creado exitosamente!');
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        alert('Hubo un error al crear el paciente.');
-    });
+// app.js
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('serviceRequestForm');
+  form.addEventListener('submit', handleFormSubmit);
 });
+
+function handleFormSubmit(event) {
+  event.preventDefault();
+  
+  const datosSolicitud = recolectarDatosFormulario();
+
+  console.log("Datos de la solicitud:", datosSolicitud);
+
+  // Aquí se enviaría al servidor
+  // enviarSolicitud(datosSolicitud);
+
+  alert('Solicitud enviada correctamente');
+}
+
+function recolectarDatosFormulario() {
+  return {
+    paciente: obtenerDatosPaciente(),
+    medico: obtenerDatosMedico(),
+    diagnostico: obtenerDiagnostico(),
+    procedimiento: obtenerDatosProcedimiento(),
+    disponibilidad: obtenerDisponibilidad()
+  };
+}
+
+function obtenerDatosPaciente() {
+  return {
+    nombre: obtenerValor('nombrePaciente'),
+    fechaConsulta: obtenerValor('fechaConsulta')
+  };
+}
+
+function obtenerDatosMedico() {
+  return {
+    nombre: obtenerValor('nombreMedico'),
+    cedula: obtenerValor('cedulaMedico')
+  };
+}
+
+function obtenerDiagnostico() {
+  return obtenerValor('diagnostico');
+}
+
+function obtenerDatosProcedimiento() {
+  return {
+    nombre: obtenerValor('procedimiento'),
+    justificacion: obtenerValor('justificacion')
+  };
+}
+
+function obtenerDisponibilidad() {
+  const fechas = ['fechaOpcion1', 'fechaOpcion2', 'fechaOpcion3']
+    .map(id => obtenerValor(id))
+    .filter(fecha => fecha !== "");
+
+  return {
+    fechas,
+    horario: obtenerValor('horarioPreferente')
+  };
+}
+
+function obtenerValor(id) {
+  const elemento = document.getElementById(id);
+  return elemento ? elemento.value : '';
+}
+
+// function enviarSolicitud(data) {
+//   fetch('/api/solicitudes', {
+//     method: 'POST',
+//     headers: { 'Content-Type': 'application/json' },
+//     body: JSON.stringify(data)
+//   });
+// }
