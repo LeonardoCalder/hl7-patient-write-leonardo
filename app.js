@@ -1,6 +1,6 @@
 document.getElementById('patientForm').addEventListener('submit', function(event) {
     event.preventDefault();
-
+ 
     // Obtener los valores del formulario
     const name = document.getElementById('name').value;
     const familyName = document.getElementById('familyName').value;
@@ -13,7 +13,7 @@ document.getElementById('patientForm').addEventListener('submit', function(event
     const address = document.getElementById('address').value;
     const city = document.getElementById('city').value;
     const postalCode = document.getElementById('postalCode').value;
-
+ 
     // Crear el objeto Patient en formato FHIR
     const patient = {
         resourceType: "Patient",
@@ -45,7 +45,7 @@ document.getElementById('patientForm').addEventListener('submit', function(event
             country: "Colombia"
         }]
     };
-
+ 
     // Enviar los datos usando Fetch API
     fetch('https://hl7-fhir-ehr-leonardo.onrender.com', {
         method: 'POST',
