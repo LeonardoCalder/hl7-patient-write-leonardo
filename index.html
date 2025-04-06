@@ -5,48 +5,67 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Solicitud Médica</title>
   <style>
+    :root {
+      --bg: #e8fdf5;
+      --primary: #2c977d;
+      --secondary: #a1e6d3;
+      --text: #1e3f3a;
+      --hover: #237a65;
+    }
+
     body {
       font-family: sans-serif;
-      background: #f1f1f1;
+      background: var(--bg);
       margin: 0; padding: 2rem;
     }
+
     .box {
       max-width: 600px;
       margin: auto;
       background: #fff;
       padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      border: 1px solid var(--secondary);
     }
+
     h1 {
       text-align: center;
-      color: #1d3557;
+      color: var(--primary);
       margin-bottom: 1rem;
     }
+
     label {
       display: block;
-      font-weight: bold;
+      font-weight: 600;
       margin: 1rem 0 .3rem;
+      color: var(--text);
     }
+
     input, select, textarea {
       width: 100%;
-      padding: .6rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: .65rem;
+      border: 1px solid var(--secondary);
+      border-radius: 6px;
+      background: #f8fefc;
+      font-size: 1rem;
     }
+
     button {
       margin-top: 1.5rem;
       width: 100%;
-      background: #457b9d;
-      color: #fff;
+      background: var(--primary);
+      color: white;
       border: none;
       padding: 1rem;
       font-size: 1rem;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: background 0.3s;
     }
+
     button:hover {
-      background: #356183;
+      background: var(--hover);
     }
   </style>
 </head>
@@ -85,7 +104,7 @@
         <option value="nocturno">16–20</option>
       </select>
 
-      <button type="submit">Enviar</button>
+      <button type="submit">Enviar Solicitud</button>
     </form>
   </div>
 
