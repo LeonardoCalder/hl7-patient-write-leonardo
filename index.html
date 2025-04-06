@@ -107,42 +107,6 @@
       <button type="submit">Enviar Solicitud</button>
     </form>
   </div>
-
-  <script>
-    const $ = id => document.getElementById(id);
-    const hoyISO = () => new Date().toISOString().split('T')[0];
-
-    document.addEventListener('DOMContentLoaded', () => {
-      $('consulta').max = hoyISO();
-      const mañana = new Date();
-      mañana.setDate(mañana.getDate() + 1);
-      $('fechaCita').min = mañana.toISOString().split('T')[0];
-    });
-
-    $('form').addEventListener('submit', e => {
-      e.preventDefault();
-      if ($('consulta').value > hoyISO()) {
-        alert("La fecha de consulta no puede ser futura");
-        return;
-      }
-
-      const datos = {
-        paciente: $('paciente').value,
-        consulta: $('consulta').value,
-        medico: $('medico').value,
-        cedula: $('cedula').value,
-        dx: $('dx').value,
-        procedimiento: $('proc').value,
-        justificacion: $('just').value,
-        fechaPreferida: $('fechaCita').value || null,
-        horario: $('hora').value,
-        enviada: new Date().toLocaleString()
-      };
-
-      console.log("Datos:", datos);
-      alert("Solicitud enviada");
-      e.target.reset();
-    });
-  </script>
+<script src="app.js"></script>
 </body>
 </html>
